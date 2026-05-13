@@ -45,7 +45,7 @@ const emptyOrder = {
   specialNotes: "",
   machine: "GTO",
   machineSize: "64x90",
-  laminationType: "Matt",
+  laminationType: "None",
   status: "Pending",
   finishing: {
     uv: false,
@@ -494,7 +494,7 @@ export default function App() {
       specialNotes: order.specialNotes || "",
       machine: order.machine || "GTO",
       machineSize: order.machineSize || "64x90",
-      laminationType: order.laminationType || "Matt",
+      laminationType: order.laminationType || "None",
       status: order.status || "Pending",
       finishing: {
         uv: !!order.finishing?.uv,
@@ -1203,6 +1203,7 @@ export default function App() {
                     value={orderForm.laminationType}
                     onChange={(e) => updateOrderField("laminationType", e.target.value)}
                   >
+                    <option>None</option>
                     <option>Matt</option>
                     <option>Glossy</option>
                   </select>
