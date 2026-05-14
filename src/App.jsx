@@ -30,6 +30,8 @@ const emptyItem = () => ({
   paperSize: "",
   finalSize: "",
   paperQty: "",
+  screenshot: "",
+  screenshotOrientation: "",
 });
 
 const emptyOrder = {
@@ -372,6 +374,46 @@ export default function App() {
     });
   }
 
+  function handleScreenshotUpload(index, event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX_DIM = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height && width > MAX_DIM) {
+          height *= MAX_DIM / width;
+          width = MAX_DIM;
+        } else if (height > width && height > MAX_DIM) {
+          width *= MAX_DIM / height;
+          height = MAX_DIM;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        const orientation = width > height ? "landscape" : "portrait";
+
+        setOrderForm((prev) => {
+          const items = [...prev.items];
+          items[index] = { ...items[index], screenshot: dataUrl, screenshotOrientation: orientation };
+          return { ...prev, items };
+        });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   function addItem() {
     setOrderForm((prev) => {
       if (prev.items.length >= 10) {
@@ -678,6 +720,27 @@ export default function App() {
             .signs { display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; margin-top:28px; text-align:center; font-size:13px; }
             .signLine { border-top:1px solid #333; padding-top:8px; }
             .smallBox { display:inline-block; min-width:60px; border:1px solid #444; padding:3px 8px; text-align:center; margin-left:6px; }
+            .screenshot-page {
+              page-break-before: always;
+              width: 100%;
+              height: 95vh;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+            }
+            .screenshot-img {
+              max-width: 100%;
+              max-height: 90%;
+              object-fit: contain;
+              border: 1px solid #ccc;
+            }
+            @media print {
+              @page portrait-page { size: portrait; }
+              @page landscape-page { size: landscape; }
+              .page-portrait { page: portrait-page; }
+              .page-landscape { page: landscape-page; }
+            }
           </style>
         </head>
         <body>
@@ -771,6 +834,15 @@ export default function App() {
             <div class="signLine">Manager Signature</div>
             <div class="signLine">Accountant Signature</div>
           </div>
+
+          ${items
+            .map((item, idx) => item.screenshot ? `
+              <div class="screenshot-page ${item.screenshotOrientation === 'landscape' ? 'page-landscape' : 'page-portrait'}">
+                <h3 style="margin: 0 0 10px 0;">Item ${idx + 1} Screenshot - ${order.id}</h3>
+                <img src="${item.screenshot}" class="screenshot-img" />
+              </div>
+            ` : "")
+            .join("")}
 
           <script>
             window.onload = () => window.print();
@@ -1171,6 +1243,30 @@ export default function App() {
                       <label>Paper Qty</label>
                       <input value={item.paperQty} onChange={(e) => updateItem(index, "paperQty", e.target.value)} />
                     </div>
+                  </div>
+
+                  <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center" }}>
+                    <label style={{ margin: 0, fontSize: 13, fontWeight: "bold" }}>Screenshot</label>
+                    <input type="file" accept="image/*" onChange={(e) => handleScreenshotUpload(index, e)} />
+                    {item.screenshot && (
+                      <div style={{ position: "relative" }}>
+                        <img src={item.screenshot} alt="Screenshot" style={{ height: 40, border: "1px solid #ccc" }} />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updateItem(index, "screenshot", "");
+                            updateItem(index, "screenshotOrientation", "");
+                          }}
+                          style={{
+                            position: "absolute", top: -6, right: -6, background: "#ef4444", color: "white",
+                            border: "none", borderRadius: "50%", width: 18, height: 18, fontSize: 10, cursor: "pointer",
+                            display: "flex", justifyContent: "center", alignItems: "center", padding: 0
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
