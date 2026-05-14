@@ -707,17 +707,17 @@ export default function App() {
             .title2 { font-size: 26px; font-weight: bold; text-decoration: underline; }
             .ar { font-size: 20px; font-weight:bold; }
             .ar-sm { font-size: 11px; color:#333; }
-            .lineRow { display:flex; justify-content:space-between; gap:20px; margin:10px 0; }
-            .lineField { flex:1; font-size:14px; }
+            .lineRow { display:flex; justify-content:space-between; gap:20px; margin:6px 0; }
+            .lineField { flex:1; font-size:13px; }
             .dots { border-bottom:1px dotted #555; display:inline-block; min-width:180px; height:18px; vertical-align:bottom; }
-            table { width:100%; border-collapse:collapse; margin-top:12px; }
-            th, td { border:1px solid #555; padding:6px; font-size:12px; text-align:center; vertical-align:middle; }
+            table { width:100%; border-collapse:collapse; margin-top:6px; }
+            th, td { border:1px solid #555; padding:4px; font-size:11px; text-align:center; vertical-align:middle; }
             .labelCell { text-align:left; width:120px; font-weight:bold; }
-            .notes { border:1px solid #555; min-height:70px; padding:8px; margin-top:8px; }
-            .finish { display:flex; gap:16px; flex-wrap:wrap; margin:12px 0; font-size:13px; }
-            .box { display:inline-block; width:16px; height:16px; border:1px solid #444; text-align:center; line-height:14px; margin-right:4px; }
-            .bottomRow { display:flex; justify-content:space-between; gap:20px; margin-top:12px; font-size:14px; }
-            .signs { display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; margin-top:28px; text-align:center; font-size:13px; }
+            .notes { border:1px solid #555; min-height:50px; padding:6px; margin-top:6px; }
+            .finish { display:flex; gap:16px; flex-wrap:wrap; margin:8px 0; font-size:12px; }
+            .box { display:inline-block; width:14px; height:14px; border:1px solid #444; text-align:center; line-height:12px; margin-right:4px; }
+            .bottomRow { display:flex; justify-content:space-between; gap:20px; margin-top:8px; font-size:13px; }
+            .signs { display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; margin-top:20px; text-align:center; font-size:12px; }
             .signLine { border-top:1px solid #333; padding-top:8px; }
             .smallBox { display:inline-block; min-width:60px; border:1px solid #444; padding:3px 8px; text-align:center; margin-left:6px; }
             .screenshot-page {
@@ -736,6 +736,8 @@ export default function App() {
               border: 1px solid #ccc;
             }
             @media print {
+              @page { size: A4; margin: 10mm; }
+              body { padding: 0; }
               @page portrait-page { size: portrait; }
               @page landscape-page { size: landscape; }
               .page-portrait { page: portrait-page; }
